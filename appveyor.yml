@@ -1,0 +1,30 @@
+#based on https://github.com/Hoikas/PlasmaPrefix/blob/681287437d022a8fb9e4560c3a41a8ab2cb71b54/appveyor.yml
+version: '{build}'
+
+image: Visual Studio 2015
+
+#init:
+#  - ps: |
+#      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+build_script:
+  - ps: |
+      $outpath = (Get-Location).Path
+      Set-Location C:\tools\vcpkg
+      git pull 2> $null
+      bootstrap-vcpkg.bat
+      if ($lastExitCode -ne 0) { throw "Failed to update vcpkg" }
+      vcpkg install curl
+      vcpkg list --x-full-desc
+      # CURL's cmake modules are incompatible with Plasma, but CMake 3.17 tries
+      # to use them anyway...  So we just nuke 'em
+      Set-Location C:\tools\vcpkg\installed
+      Remove-Item "x86-windows-static-md\share\curl\CURL*.cmake"
+      Set-Location C:\tools\vcpkg\
+      7z a $outpath\devlibs.zip installed
+      if ($lastExitCode -ne 0) { throw "Failed to archive static libs" }
+#on_finish:
+#  - ps: |
+#      $blockRdp = $true;
+#      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+artifacts:
+  - path: devlibs.zip
