@@ -1,25 +1,30 @@
 #based on https://github.com/Hoikas/PlasmaPrefix/blob/681287437d022a8fb9e4560c3a41a8ab2cb71b54/appveyor.yml
 version: '{build}'
 
-image: Visual Studio 2015
+image:
+  - Visual Studio 2022
+  - Visual Studio 2019
+  - Visual Studio 2017
+  - Visual Studio 2015
 
 #init:
 #  - ps: |
 #      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 build_script:
   - ps: |
+      gci env:
       $outpath = (Get-Location).Path
       Set-Location C:\tools\vcpkg
       git pull 2> $null
       bootstrap-vcpkg.bat
       if ($lastExitCode -ne 0) { throw "Failed to update vcpkg" }
-      vcpkg install curl[tool]:x86-windows-static
+      vcpkg install curl[tool]:x64-windows-static
       Set-Location C:\tools\vcpkg\
-      7z a $outpath\devlibs.zip installed
+      7z a $outpath\tools.zip installed
       if ($lastExitCode -ne 0) { throw "Failed to archive static libs" }
 #on_finish:
 #  - ps: |
 #      $blockRdp = $true;
 #      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 artifacts:
-  - path: devlibs.zip
+  - path: tools.zip
