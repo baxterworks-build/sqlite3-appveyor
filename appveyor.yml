@@ -13,12 +13,7 @@ build_script:
       git pull 2> $null
       bootstrap-vcpkg.bat
       if ($lastExitCode -ne 0) { throw "Failed to update vcpkg" }
-      vcpkg install curl
-      vcpkg list --x-full-desc
-      # CURL's cmake modules are incompatible with Plasma, but CMake 3.17 tries
-      # to use them anyway...  So we just nuke 'em
-      Set-Location C:\tools\vcpkg\installed
-      Remove-Item "x86-windows-static-md\share\curl\CURL*.cmake"
+      vcpkg install curl[tool]:x64-windows
       Set-Location C:\tools\vcpkg\
       7z a $outpath\devlibs.zip installed
       if ($lastExitCode -ne 0) { throw "Failed to archive static libs" }
