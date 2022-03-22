@@ -1,5 +1,6 @@
 #based on https://github.com/Hoikas/PlasmaPrefix/blob/681287437d022a8fb9e4560c3a41a8ab2cb71b54/appveyor.yml
 version: '{build}'
+max_jobs: 4
 
 image:
   - Visual Studio 2022
@@ -7,9 +8,9 @@ image:
   - Visual Studio 2017
   - Visual Studio 2015
 
-#init:
-#  - ps: |
-#      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+build:
+  parallel: true
+
 build_script:
   - ps: |
       $env:VCPKG_BUILD_TYPE="release"
@@ -21,9 +22,6 @@ build_script:
       vcpkg install curl[tool]:x64-windows-static
       Set-Location installed\x64-windows-static\tools\curl
       7z a $outpath\tools.zip curl.exe
-#on_finish:
-#  - ps: |
-#      $blockRdp = $true;
-#      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 artifacts:
   - path: tools.zip
