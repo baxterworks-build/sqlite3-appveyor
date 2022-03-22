@@ -12,16 +12,15 @@ image:
 #      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 build_script:
   - ps: |
-      gci env:
+      $env:VCPKG_BUILD_TYPE="release"
       $outpath = (Get-Location).Path
       Set-Location C:\tools\vcpkg
       git pull 2> $null
       bootstrap-vcpkg.bat
       if ($lastExitCode -ne 0) { throw "Failed to update vcpkg" }
       vcpkg install curl[tool]:x64-windows-static
-      Set-Location C:\tools\vcpkg\
-      7z a $outpath\tools.zip installed
-      if ($lastExitCode -ne 0) { throw "Failed to archive static libs" }
+      Set-Location installed\x64-windows-static\tools\curl
+      7z a $outpath\tools.zip curl.exe
 #on_finish:
 #  - ps: |
 #      $blockRdp = $true;
