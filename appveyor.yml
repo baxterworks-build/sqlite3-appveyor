@@ -17,4 +17,4 @@ build_script:
       7z a $outpath\sqlite3.zip x64-windows-static
 
 artifacts:
-  - path: curl.zip
+  - path: sqlite3.zip
