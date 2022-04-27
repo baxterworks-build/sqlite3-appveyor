@@ -12,7 +12,7 @@ build_script:
       bootstrap-vcpkg.bat
       Add-Content -Path C:\tools\vcpkg\triplets\x64-windows-static.cmake -Value "set(VCPKG_BUILD_TYPE `"release`")" -NoNewline
       if ($lastExitCode -ne 0) { throw "Failed to update vcpkg" }
-      vcpkg install sqlite3:x64-windows-static
+      vcpkg install sqlite3[tool]:x64-windows-static
       Set-Location installed\
       7z a $outpath\sqlite3.zip x64-windows-static
 
