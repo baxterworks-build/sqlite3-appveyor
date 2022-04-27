@@ -12,9 +12,9 @@ build_script:
       bootstrap-vcpkg.bat
       Add-Content -Path C:\tools\vcpkg\triplets\x64-windows-static.cmake -Value "set(VCPKG_BUILD_TYPE `"release`")" -NoNewline
       if ($lastExitCode -ne 0) { throw "Failed to update vcpkg" }
-      vcpkg install curl[tool]:x64-windows-static
-      Set-Location installed\x64-windows-static\tools\curl
-      7z a $outpath\curl.zip curl.exe
+      vcpkg install sqlite3:x64-windows-static
+      Set-Location installed\
+      7z a $outpath\sqlite3.zip x64-windows-static
 
 artifacts:
   - path: curl.zip
